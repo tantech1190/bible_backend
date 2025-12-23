@@ -1,0 +1,2804 @@
+{
+  "info": {
+    "_postman_id": "intentionalstudy-api-2024",
+    "name": "IntentionalStudy API - Complete Collection",
+    "description": "Complete API collection for IntentionalStudy Bible App with all 90+ endpoints.\n\n## Setup Instructions:\n1. Import this collection into Postman or Thunder Client\n2. Set the `baseUrl` variable to your API URL (default: http://localhost:5000/api)\n3. Register a new user or login with existing credentials\n4. Copy the JWT token from the login response\n5. Set the `authToken` variable with your token\n6. Start testing protected endpoints!\n\n## Variables:\n- `baseUrl`: API base URL\n- `authToken`: JWT token from login\n- `userId`: Current user ID\n- `devotionalId`: Sample devotional ID\n- `questId`: Sample quest ID",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "intentionalstudy"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "default"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "secret"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "devotionalId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "questId",
+      "value": "",
+      "type": "default"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('authToken', jsonData.data.token);",
+                  "    pm.environment.set('userId', jsonData.data.user._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"age\": 17\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Register a new user account. Token is automatically saved to environment."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('authToken', jsonData.data.token);",
+                  "    pm.environment.set('userId', jsonData.data.user._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login with email and password. Token is automatically saved."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Get current authenticated user details"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Updated\",\n  \"age\": 18,\n  \"avatar\": \"https://example.com/avatar.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/update-profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "update-profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/update-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "update-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📖 Devotionals",
+      "item": [
+        {
+          "name": "Get All Devotionals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/devotionals?page=1&limit=10&status=published",
+              "host": ["{{baseUrl}}"],
+              "path": ["devotionals"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "published"
+                },
+                {
+                  "key": "category",
+                  "value": "Faith",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Published Devotionals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/devotionals/published?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["devotionals", "published"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Today's Devotional",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/devotionals/today",
+              "host": ["{{baseUrl}}"],
+              "path": ["devotionals", "today"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Devotional by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/devotionals/{{devotionalId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["devotionals", "{{devotionalId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Devotional (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('devotionalId', jsonData.data.devotional._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Finding Peace in Chaos\",\n  \"content\": \"In times of uncertainty, God's word reminds us that He is always in control. When we face challenges, we can find peace in His promises. Let us remember that God works all things together for the good of those who love Him.\",\n  \"verse\": \"Philippians 4:6-7\",\n  \"verseText\": \"Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God. And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus.\",\n  \"date\": \"2024-12-18\",\n  \"status\": \"published\",\n  \"category\": \"Peace\",\n  \"tags\": [\"peace\", \"anxiety\", \"prayer\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/devotionals",
+              "host": ["{{baseUrl}}"],
+              "path": ["devotionals"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Devotional (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Title: Finding True Peace\",\n  \"status\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/devotionals/{{devotionalId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["devotionals", "{{devotionalId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Devotional Status (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/devotionals/{{devotionalId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["devotionals", "{{devotionalId}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Devotional (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/devotionals/{{devotionalId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["devotionals", "{{devotionalId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Like Devotional",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/devotionals/{{devotionalId}}/like",
+              "host": ["{{baseUrl}}"],
+              "path": ["devotionals", "{{devotionalId}}", "like"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Reflection",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"This devotional really spoke to me today. It reminded me to trust God even when things seem uncertain.\",\n  \"isPrivate\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/devotionals/{{devotionalId}}/reflect",
+              "host": ["{{baseUrl}}"],
+              "path": ["devotionals", "{{devotionalId}}", "reflect"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark as Read",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/devotionals/{{devotionalId}}/read",
+              "host": ["{{baseUrl}}"],
+              "path": ["devotionals", "{{devotionalId}}", "read"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎯 Quests",
+      "item": [
+        {
+          "name": "Get All Quests",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quests?page=1&limit=10&status=active",
+              "host": ["{{baseUrl}}"],
+              "path": ["quests"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "active"
+                },
+                {
+                  "key": "difficulty",
+                  "value": "medium",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Quests",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quests/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["quests", "active"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quest by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quests/{{questId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["quests", "{{questId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Quest (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.environment.set('questId', jsonData.data.quest._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Journey Through Genesis\",\n  \"book\": \"Genesis\",\n  \"chapters\": \"1-50\",\n  \"description\": \"Explore the beginning of creation and God's covenant with His people\",\n  \"points\": 500,\n  \"difficulty\": \"medium\",\n  \"status\": \"active\",\n  \"category\": \"Old Testament\",\n  \"icon\": \"🌍\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/quests",
+              "host": ["{{baseUrl}}"],
+              "path": ["quests"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Quest (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated: Complete Journey Through Genesis\",\n  \"points\": 600\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/quests/{{questId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["quests", "{{questId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Quest Status (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/quests/{{questId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["quests", "{{questId}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Quest (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quests/{{questId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["quests", "{{questId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Join Quest",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quests/{{questId}}/join",
+              "host": ["{{baseUrl}}"],
+              "path": ["quests", "{{questId}}", "join"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Quest Progress",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"chaptersCompleted\": 10,\n  \"percentage\": 20,\n  \"pointsEarned\": 100\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/quests/{{questId}}/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["quests", "{{questId}}", "progress"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Quest",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quests/{{questId}}/complete",
+              "host": ["{{baseUrl}}"],
+              "path": ["quests", "{{questId}}", "complete"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Quest Progress",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quests/{{questId}}/my-progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["quests", "{{questId}}", "my-progress"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📅 Verse of the Day",
+      "item": [
+        {
+          "name": "Get All Verses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-of-day?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-of-day"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Today's Verse",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-of-day/today",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-of-day", "today"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Verse by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-of-day/{{verseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-of-day", "{{verseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Verse (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verse\": \"For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.\",\n  \"reference\": \"John 3:16\",\n  \"date\": \"2024-12-18\",\n  \"status\": \"published\",\n  \"translation\": \"NIV\",\n  \"theme\": \"Love\",\n  \"backgroundColor\": \"#161d49\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/verse-of-day",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-of-day"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Verse (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme\": \"God's Love\",\n  \"backgroundColor\": \"#2A3A6B\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/verse-of-day/{{verseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-of-day", "{{verseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Verse (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-of-day/{{verseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-of-day", "{{verseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Like Verse",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-of-day/{{verseId}}/like",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-of-day", "{{verseId}}", "like"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Share Verse",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-of-day/{{verseId}}/share",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-of-day", "{{verseId}}", "share"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📚 Reading Plans",
+      "item": [
+        {
+          "name": "Get All Reading Plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reading-plans?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["reading-plans"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "Faith",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Reading Plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reading-plans/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["reading-plans", "active"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Enrolled Plans",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reading-plans/user/enrolled",
+              "host": ["{{baseUrl}}"],
+              "path": ["reading-plans", "user", "enrolled"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reading Plan by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reading-plans/{{planId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reading-plans", "{{planId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Reading Plan (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"7 Days of Faith\",\n  \"description\": \"Build a strong foundation of faith through daily scripture reading\",\n  \"duration\": \"7 days\",\n  \"durationDays\": 7,\n  \"topic\": \"Faith & Trust\",\n  \"category\": \"Faith\",\n  \"passages\": [\n    {\n      \"day\": 1,\n      \"reference\": \"Hebrews 11:1-6\",\n      \"verseText\": \"Now faith is confidence in what we hope for...\",\n      \"reflection\": \"What does faith mean to you?\"\n    },\n    {\n      \"day\": 2,\n      \"reference\": \"Matthew 17:20\",\n      \"verseText\": \"If you have faith as small as a mustard seed...\",\n      \"reflection\": \"How can small faith lead to big results?\"\n    },\n    {\n      \"day\": 3,\n      \"reference\": \"Romans 10:17\",\n      \"reflection\": \"How does hearing God's word build faith?\"\n    },\n    {\n      \"day\": 4,\n      \"reference\": \"James 2:14-26\"\n    },\n    {\n      \"day\": 5,\n      \"reference\": \"Proverbs 3:5-6\"\n    },\n    {\n      \"day\": 6,\n      \"reference\": \"2 Corinthians 5:7\"\n    },\n    {\n      \"day\": 7,\n      \"reference\": \"Mark 9:23-24\"\n    }\n  ],\n  \"status\": \"active\",\n  \"difficulty\": \"beginner\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reading-plans",
+              "host": ["{{baseUrl}}"],
+              "path": ["reading-plans"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Reading Plan (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated: 7 Days of Growing Faith\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reading-plans/{{planId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reading-plans", "{{planId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Reading Plan (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reading-plans/{{planId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reading-plans", "{{planId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Enroll in Reading Plan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reading-plans/{{planId}}/enroll",
+              "host": ["{{baseUrl}}"],
+              "path": ["reading-plans", "{{planId}}", "enroll"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Reading Plan Progress",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentDay\": 3,\n  \"completedDays\": [1, 2, 3],\n  \"percentage\": 42.8\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reading-plans/{{planId}}/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["reading-plans", "{{planId}}", "progress"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Reading Plan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reading-plans/{{planId}}/complete",
+              "host": ["{{baseUrl}}"],
+              "path": ["reading-plans", "{{planId}}", "complete"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rate Reading Plan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"review\": \"This plan really helped strengthen my faith!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reading-plans/{{planId}}/rate",
+              "host": ["{{baseUrl}}"],
+              "path": ["reading-plans", "{{planId}}", "rate"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👤 Users & Profile",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"age\": 18,\n  \"avatar\": \"https://example.com/avatar.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Preferences",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme\": \"dark\",\n  \"fontSize\": \"medium\",\n  \"translation\": \"NIV\",\n  \"notifications\": {\n    \"devotionals\": true,\n    \"quests\": true,\n    \"prayers\": false\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/preferences",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "preferences"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Stats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "stats"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Streak",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"streak\": 7\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/stats/update-streak",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "stats", "update-streak"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Points",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"points\": 50\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/stats/add-points",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "stats", "add-points"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Bookmarks",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/bookmarks",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "bookmarks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Bookmark",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verse\": \"John 3:16\",\n  \"reference\": \"John 3:16\",\n  \"note\": \"My favorite verse about God's love\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/bookmarks",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "bookmarks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Bookmark",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/bookmarks/{{bookmarkId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "bookmarks", "{{bookmarkId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Highlights",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/highlights",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "highlights"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Highlight",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verse\": \"Psalm 23:1\",\n  \"reference\": \"Psalm 23:1\",\n  \"color\": \"yellow\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/highlights",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "highlights"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Highlight",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/highlights/{{highlightId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "highlights", "{{highlightId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🙏 Prayers",
+      "item": [
+        {
+          "name": "Get All Prayers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/prayers?page=1&limit=20&category=Guidance",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "category",
+                  "value": "Guidance"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Prayers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/prayers/my-prayers",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers", "my-prayers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Public Prayers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/prayers/public?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers", "public"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Prayer by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/prayers/{{prayerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers", "{{prayerId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Prayer",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Prayer for Guidance\",\n  \"content\": \"Lord, I need your guidance in making important decisions. Please show me the right path.\",\n  \"category\": \"Guidance\",\n  \"isPrivate\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/prayers",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Prayer",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated prayer content\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/prayers/{{prayerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers", "{{prayerId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Prayer",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/prayers/{{prayerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers", "{{prayerId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pray For Someone",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/prayers/{{prayerId}}/pray",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers", "{{prayerId}}", "pray"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Comment to Prayer",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Praying for you! God will guide you.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/prayers/{{prayerId}}/comment",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers", "{{prayerId}}", "comment"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Prayer as Answered",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"God answered my prayer! I got the job!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/prayers/{{prayerId}}/answer",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers", "{{prayerId}}", "answer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Child Prayer (Prayer Tree)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Follow-up Prayer\",\n  \"content\": \"Thank you for praying with me. Continuing to seek guidance.\",\n  \"category\": \"Guidance\",\n  \"isPrivate\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/prayers/{{prayerId}}/child",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers", "{{prayerId}}", "child"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Prayer Tree",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/prayers/{{prayerId}}/tree",
+              "host": ["{{baseUrl}}"],
+              "path": ["prayers", "{{prayerId}}", "tree"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎨 Verse Art",
+      "item": [
+        {
+          "name": "Get All Verse Art",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-art?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-art"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Public Verse Art",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-art/public?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-art", "public"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Verse Art",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-art/user/my-art",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-art", "user", "my-art"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Verse Art by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-art/{{artId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-art", "{{artId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Verse Art",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verse\": \"I can do all things through Christ who strengthens me\",\n  \"reference\": \"Philippians 4:13\",\n  \"design\": {\n    \"template\": \"modern\",\n    \"backgroundColor\": \"#161d49\",\n    \"textColor\": \"#ffffff\",\n    \"fontFamily\": \"Inter\",\n    \"fontSize\": 24,\n    \"alignment\": \"center\"\n  },\n  \"isPublic\": true,\n  \"tags\": [\"strength\", \"faith\", \"motivation\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/verse-art",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-art"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Verse Art",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isPublic\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/verse-art/{{artId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-art", "{{artId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Verse Art",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-art/{{artId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-art", "{{artId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Like Verse Art",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-art/{{artId}}/like",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-art", "{{artId}}", "like"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Share Verse Art",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-art/{{artId}}/share",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-art", "{{artId}}", "share"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Download Verse Art",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/verse-art/{{artId}}/download",
+              "host": ["{{baseUrl}}"],
+              "path": ["verse-art", "{{artId}}", "download"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 User Management (Admin)",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users?page=1&limit=20&role=user&isActive=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "role",
+                  "value": "user"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Role",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"moderator\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/role",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}", "role"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🛡️ Moderation (Admin)",
+      "item": [
+        {
+          "name": "Get Flagged Content",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/moderation/flagged-content",
+              "host": ["{{baseUrl}}"],
+              "path": ["moderation", "flagged-content"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Comments",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/moderation/pending-comments",
+              "host": ["{{baseUrl}}"],
+              "path": ["moderation", "pending-comments"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reported Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/moderation/reported-users",
+              "host": ["{{baseUrl}}"],
+              "path": ["moderation", "reported-users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contentType\": \"prayer\",\n  \"contentId\": \"{{prayerId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/moderation/approve-comment/{{commentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["moderation", "approve-comment", "{{commentId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Comment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contentType\": \"prayer\",\n  \"contentId\": \"{{prayerId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/moderation/reject-comment/{{commentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["moderation", "reject-comment", "{{commentId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Flag Content",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contentType\": \"prayer\",\n  \"contentId\": \"{{prayerId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/moderation/flag-content",
+              "host": ["{{baseUrl}}"],
+              "path": ["moderation", "flag-content"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unflag Content",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contentType\": \"prayer\",\n  \"contentId\": \"{{prayerId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/moderation/unflag-content",
+              "host": ["{{baseUrl}}"],
+              "path": ["moderation", "unflag-content"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Warn User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Inappropriate content in prayer request\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/moderation/warn-user/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["moderation", "warn-user", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Suspend User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Repeated violations of community guidelines\",\n  \"duration\": \"7 days\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/moderation/suspend-user/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["moderation", "suspend-user", "{{userId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 Analytics (Admin)",
+      "item": [
+        {
+          "name": "Get Dashboard Statistics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "dashboard"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Analytics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Engagement Analytics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/engagement",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "engagement"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Content Analytics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/content",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "content"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Growth Analytics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/analytics/growth",
+              "host": ["{{baseUrl}}"],
+              "path": ["analytics", "growth"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏥 Health Check",
+      "item": [
+        {
+          "name": "API Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Check if the API server is running"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
