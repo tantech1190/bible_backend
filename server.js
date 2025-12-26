@@ -10,15 +10,8 @@ const app = express();
 
 // Security Middleware
 app.use(helmet());
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE","OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
+app.use(cors());
 
-);
 
 // Rate Limiting
 const limiter = rateLimit({
@@ -97,7 +90,7 @@ app.use((req, res) => {
 });
 
 // Start Server
-const PORT = process.env.PORT || 5002;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`🚀 IntentionalStudy API Server running on port ${PORT}`);
   console.log(`📚 Environment: ${process.env.NODE_ENV || 'development'}`);
