@@ -12,6 +12,7 @@ router.get('/:id', optionalAuth, devotionalController.getById);
 // Protected routes (users can like and reflect)
 router.post('/:id/like', protect, devotionalController.likeDevotional);
 router.post('/:id/reflect', protect, devotionalController.addReflection);
+router.put('/:id/reflections/:reflectionId', protect, devotionalController.updateReflection);
 router.post('/:id/read', protect, devotionalController.markAsRead);
 
 // Admin routes

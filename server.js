@@ -48,6 +48,7 @@ const prayerRoutes = require('./routes/prayer.routes');
 const verseArtRoutes = require('./routes/verseArt.routes');
 const moderationRoutes = require('./routes/moderation.routes');
 const analyticsRoutes = require('./routes/analytics.routes');
+const moodRoutes = require('./routes/mood.routes');
 
 // API Routes
 app.use('/api/auth', authRoutes);
@@ -60,6 +61,7 @@ app.use('/api/prayers', prayerRoutes);
 app.use('/api/verse-art', verseArtRoutes);
 app.use('/api/moderation', moderationRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/mood', moodRoutes);
 
 // Health Check Route
 app.get('/api/health', (req, res) => {

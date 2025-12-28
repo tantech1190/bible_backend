@@ -77,11 +77,23 @@ exports.getToday = async (req, res) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    
+    // Also check for yesterday and tomorrow to account for timezone differences
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
     const devotional = await Devotional.findOne({
-      date: today,
+      date: {
+        $gte: yesterday,
+        $lt: tomorrow
+      },
       status: 'published'
-    }).populate('author', 'name avatar');
+    })
+    .sort({ date: -1 })
+    .populate('author', 'name avatar');
 
     if (!devotional) {
       return res.status(404).json({
@@ -318,6 +330,61 @@ exports.addReflection = async (req, res) => {
     res.json({
       success: true,
       message: 'Reflection added successfully',
+      data: { devotional }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Update reflection
+// @route   PUT /api/devotionals/:id/reflections/:reflectionId
+// @access  Private
+exports.updateReflection = async (req, res) => {
+  try {
+    const { text, isPrivate } = req.body;
+    const { id, reflectionId } = req.params;
+
+    const devotional = await Devotional.findById(id);
+
+    if (!devotional) {
+      return res.status(404).json({
+        success: false,
+        message: 'Devotional not found'
+      });
+    }
+
+    // Find the reflection
+    const reflection = devotional.reflections.id(reflectionId);
+
+    if (!reflection) {
+      return res.status(404).json({
+        success: false,
+        message: 'Reflection not found'
+      });
+    }
+
+    // Check if user owns the reflection
+    if (reflection.user.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to update this reflection'
+      });
+    }
+
+    // Update the reflection
+    reflection.text = text;
+    reflection.isPrivate = isPrivate !== undefined ? isPrivate : reflection.isPrivate;
+
+    await devotional.save();
+
+    res.json({
+      success: true,
+      message: 'Reflection updated successfully',
       data: { devotional }
     });
   } catch (error) {

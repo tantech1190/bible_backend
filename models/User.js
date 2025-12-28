@@ -64,6 +64,17 @@ const userSchema = new mongoose.Schema({
     devotionsCompleted: { type: Number, default: 0 },
     questsCompleted: { type: Number, default: 0 }
   },
+  moodTracking: [{
+    mood: {
+      type: String,
+      enum: ['joyful', 'peaceful', 'grateful', 'hopeful', 'struggling', 'anxious'],
+      required: true
+    },
+    date: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   bookmarks: [{
     verse: String,
     reference: String,
